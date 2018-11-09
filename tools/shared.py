@@ -407,18 +407,17 @@ def check_llvm_version():
     logging.critical('Could not verify LLVM version: %s' % str(e))
 
 
-# look for emscripten-version.txt files under or alongside the llvm source dir
 def get_fastcomp_src_dir():
+  """Locate fastcomp source tree by searching realtive to LLVM_ROOT."""
   d = LLVM_ROOT
-  emroot = path_from_root() # already abspath
-  # look for version file in llvm repo, making sure not to mistake the emscripten repo for it
+  key_file = 'readme-emscripten-fastcomp.txt'
   while d != os.path.dirname(d):
     d = os.path.abspath(d)
     # when the build directory lives below the source directory
-    if os.path.exists(os.path.join(d, 'emscripten-version.txt')) and not d == emroot:
+    if os.path.exists(os.path.join(d, key_file)):
       return d
     # when the build directory lives alongside the source directory
-    elif os.path.exists(os.path.join(d, 'src', 'emscripten-version.txt')) and not os.path.join(d, 'src') == emroot:
+    elif os.path.exists(os.path.join(d, 'src', key_file)):
       return os.path.join(d, 'src')
     else:
       d = os.path.dirname(d)
